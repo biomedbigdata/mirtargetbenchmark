@@ -1,0 +1,85 @@
+---
+title: "Benchmarking miRNA target prediction tools"
+author: "Akshit Achara, Markus List"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_document:
+    theme: lumen
+vignette: >
+  %\VignetteIndexEntry{Benchmarking miRNA target prediction tools}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+##Purpose
+
+This package provides functionalities to benchmark different sequence based miRNA target prediction tools.
+
+##Introduction
+
+microRNAs are 19-22 nucleotide long molecules responsible for repressing the expression of genes. Several algorithms have been proposed to predict target genes of microRNAs such as targetscan etc. These methods use the fact that a seed sequence of the microRNA is complementary to a part of the sequence in the target gene, mostly in the 3' UTR. Free energy of the binding of the microRNA can be used as well as sequence conservation at the target site to improve the predictions. Nevertheless, a current problem is that the false positive rate of these predictions is extremely high. This can have several reasons, for example the microRNA and the target gene may not be expressed at the same time in a specific cell type or tissue. 
+
+There is no standard to compare these tools as sequence based tools don't use condition specific imformation and hence, result in a lot of false positives. There are some expression based tools which use the correlation/coefficient information from Although we can't say which tool has the best overall performance for all tissue types, we can benchmark these tools ,using the regression models on gene and miRNA expression data, for a specific condition.  
+
+In this package we have implemented an approach to benchmark different sequence based tools using gene and miRNA expression data. We build a regression model on the expression data to predict the targets. We have implemented the following two approaches to benchmark the tools:
+
+1) Convert the regression coefficients using different thresholds and convert the predictions from tools into binary data based on the number of binding sites.The regression results are considered as true labels and the predictions from tools are considered as predicted labels. The precision value obtained for different tools on comparison against regression is used to benchmark i.e the tools with higher precision value are better than the tools with low precision value.    
+
+2) Convert the regression coefficient into binary data using a threshold value of zero.Whereas to convert the prediction data from tools into binary data, the quantiles of scores provided by the tools were used as thresholds.Precision and sensitivity were used for benchmarking the tools.
+
+##General Workflow
+
+The mirtargetbenchmark workflow starts from two ends,
+
+1) A) Filtering of the gene and miRNA expression data
+    B) Building a regression model on the combined gene-miRNA expression data.
+
+and 
+
+1)* A) Organising the downloaded data from tools into matrix format.
+      B) Convert the gene and miRNA ids to have a common format for all the matrices.
+
+Then, steps 3 and 4 have to be implemented in order.
+
+3) Extract common miRNA/gene ids from all the tools after performing some filtering on the matrices 
+   obtained from the tools
+   
+4) Obtain precision recall curves to pictorially represent the analysis and perform the benchmarking.
+
+## 1) Load the package
+
+```{r, warning=FALSE, message=FALSE}
+library(mirtargetbenchmark)
+```
+
+Download gene expression and miRNA expression data from UCSC Xena Browser,etc. Here, are some examples datasets
+available with the package:
+
+Gene expression:
+
+This is a matrix where columns are genes and the rows are samples. 
+
+```{r, eval=FALSE}
+head(gene_expr)
+```
+    
+```{r, echo=FALSE, results='asis'}
+knitr::kable(gene_expr[1:5,1:8])
+```
+
+miRNA expression:
+
+This is a matrix where columns are genes and the rows are samples. 
+
+```{r, eval=FALSE}
+head(mir_expr)
+```
+
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(mir_expr[1:5,1:5])
+```
+
+
+## A) Preprocessing of expression data
+

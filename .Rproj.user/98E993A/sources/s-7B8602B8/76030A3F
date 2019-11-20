@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574175133383.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "76030A3F",
+    "lastKnownWriteTime" : 1574175759,
+    "last_content_update" : 1574175759120,
+    "path" : "~/mirtargetbenchmark/R/con_row_col.R",
+    "project_path" : "R/con_row_col.R",
+    "properties" : {
+        "cursorPosition" : "27,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

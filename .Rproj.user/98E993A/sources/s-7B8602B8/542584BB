@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574205015016.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "542584BB",
+    "lastKnownWriteTime" : 1574210141,
+    "last_content_update" : 1574210141877,
+    "path" : "~/mirtargetbenchmark/R/filtered_tool_vs_reg.R",
+    "project_path" : "R/filtered_tool_vs_reg.R",
+    "properties" : {
+        "cursorPosition" : "75,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

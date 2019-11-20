@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574119204848.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "9ECE4FE3",
+    "lastKnownWriteTime" : 1574119394,
+    "last_content_update" : 1574119394907,
+    "path" : "~/mirtargetbenchmark/tests/testthat/test_reg_model.R",
+    "project_path" : "tests/testthat/test_reg_model.R",
+    "properties" : {
+        "cursorPosition" : "16,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

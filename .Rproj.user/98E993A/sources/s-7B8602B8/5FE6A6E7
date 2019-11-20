@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574193610337.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5FE6A6E7",
+    "lastKnownWriteTime" : 1574207999,
+    "last_content_update" : 1574207999906,
+    "path" : "~/mirtargetbenchmark/R/benchmark_score.R",
+    "project_path" : "R/benchmark_score.R",
+    "properties" : {
+        "cursorPosition" : "81,0",
+        "scrollLine" : "56"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
