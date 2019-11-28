@@ -14,10 +14,13 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
                                      dgid = 'ensembl_gene_id',mir_bool = TRUE,cmirid = ' ', dmirid = 'Accession'){
 
                               if(gene_bool){
+
                               if(cgid == 'ensembl_gene_id_version'){
+                                #convert the gene ids into ensemble gene ids
                                 colnames(mat_data) <- sub("\\.\\d+$", "", colnames(mat_data))
                               }
                               else{
+
                                 ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl",host="www.ensembl.org")
                                 ensembl_id <- getBM(attributes=c(dgid,cgid),filters = cgid,
                                                     values = colnames(mat_data), mart = ensembl)
@@ -43,14 +46,14 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
                                                     verbose = TRUE)
                               }
 
-                              print("done")
+
                               nas <- which(is.na(res[,dmirid]))
                               if(length(nas) == 0){
                                 rownames(mat_data) <- res[,dmirid]
                               }
                               else{
                               mat_data <- mat_data[-which(is.na(res[,dmirid])),]
-                              print("done2")
+
                               rownames(mat_data) <- na.omit(res[,dmirid])
 
                               }

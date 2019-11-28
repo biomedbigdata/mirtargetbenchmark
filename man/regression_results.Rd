@@ -4,14 +4,14 @@
 \alias{regression_results}
 \title{Regression models on the expression data}
 \usage{
-regression_results(gene_expr, mir_expr, num, rsq_filter)
+regression_results(gene_expr, mir_expr, model_choice, rsq_filter)
 }
 \arguments{
 \item{gene_expr}{input  preprocessed gene expression matrix}
 
 \item{mir_expr}{input preprocessed miRNA expression matrix}
 
-\item{num}{String input that specifies the regression model to be used.
+\item{model_choice}{String input that specifies the regression model to be used.
 'e','l','r' and 's' for elastic net, lasso, ridge and simple linear regression respectievly.}
 
 \item{rsq_filter}{A filter to select models/genes using the r squared value.All genes with rsq < rsq_filter will be removed.}

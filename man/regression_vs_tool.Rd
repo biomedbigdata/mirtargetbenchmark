@@ -4,17 +4,14 @@
 \alias{regression_vs_tool}
 \title{Benchmark tools by comparing regression against tools}
 \usage{
-regression_vs_tool(reg_mat, tool_mat_list, val_mat, threshold_valmir = 100)
+regression_vs_tool(reg_mat, tool_mat_list, tool_names)
 }
 \arguments{
 \item{reg_mat}{A matrix containing the regression coefficients in the form of a matrix/dataframe.}
 
-\item{val_mat}{A validation dataset containing the number of binding sites to validate the miRNAs.}
+\item{tool_mat_list}{A list containing dataframes from different tools.}
 
-\item{threshold_valmir}{A threshold value to filter the miRNAs.miRNAs with less than threshold gene targets will be removed.
-The default is 100.}
-
-\item{vector_tools}{A list containing dataframes from different tools.}
+\item{tool_names}{A list of the names of tools in the same order as tool_mat_list}
 }
 \description{
 Benchmark tools by comparing regression against tools

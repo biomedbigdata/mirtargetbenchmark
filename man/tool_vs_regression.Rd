@@ -4,15 +4,17 @@
 \alias{tool_vs_regression}
 \title{Benchmark various tools against regression using the scores.}
 \usage{
-tool_vs_regression(reg_mat, tool_mat_list, threshold = 0)
+tool_vs_regression(reg_mat, tool_mat_list, tool_names, threshold = 0)
 }
 \arguments{
 \item{reg_mat}{A matrix containing the regression coefficients in the form of a matrix/dataframe.}
 
+\item{tool_mat_list}{A list containing dataframes from different tools.}
+
+\item{tool_names}{A list of the names of tools in the same order as tool_mat_list}
+
 \item{threshold}{A threshold coefficient value for coefficients.All the coefficients less than the threshold
 will be changed to 1 and others will be 0. threshold = 0 by default.}
-
-\item{vector_tools}{A list containing dataframes from different tools.}
 }
 \description{
 Benchmark various tools against regression using the scores.

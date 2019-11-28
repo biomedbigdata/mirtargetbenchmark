@@ -31,22 +31,35 @@ In this package we have implemented an approach to benchmark different sequence 
 
 The mirtargetbenchmark workflow starts from two ends,
 
-1) A) Filtering of the gene and miRNA expression data
-    B) Building a regression model on the combined gene-miRNA expression data.
+1.1) 
+
+      A) Filtering of the gene and miRNA expression data
+      
+      B) Building a regression model on the combined gene-miRNA expression data.
 
 and 
 
-1)* A) Organising the downloaded data from tools into matrix format.
-      B) Convert the gene and miRNA ids to have a common format for all the matrices.
+1.2)  
+           
+       A) Organising the downloaded data from tools into matrix format.
+      
+       B) Convert the gene and miRNA ids to have a common format for all the matrices.
 
 Then, steps 3 and 4 have to be implemented in order.
 
-3) Extract common miRNA/gene ids from all the tools after performing some filtering on the matrices 
-   obtained from the tools
-   
-4) Obtain precision recall curves to pictorially represent the analysis and perform the benchmarking.
 
-## 1) Load the package
+3)  
+    
+        
+        Extract common miRNA/gene ids from all the tools after performing some filtering on the matrices 
+        obtained from the tools
+   
+4) 
+  
+    
+        Obtain precision recall curves to pictorially represent the analysis and perform the benchmarking.
+
+## 1.1) Expression data filtering and building regression models
 
 ```{r, warning=FALSE, message=FALSE}
 library(mirtargetbenchmark)
@@ -64,7 +77,7 @@ head(gene_expr)
 ```
     
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(gene_expr[1:5,1:8])
+knitr::kable(gene_expr[1:5,1:5])
 ```
 
 miRNA expression:
@@ -83,3 +96,68 @@ knitr::kable(mir_expr[1:5,1:5])
 
 ## A) Preprocessing of expression data
 
+```{r,results='hide',cache=TRUE, message=FALSE}
+gene_expr <- expression_preprocessing(gene_expr,missing_value = -9.9658,missing_value_filter = 90 ,
+                                      variance_filter = 0.2, mean_filter = 0.2)
+```
+
+```{r,echo = FALSE}
+sprintf("The number of genes left after the filtering are: %s",ncol(gene_expr))
+
+```
+
+
+```{r,cache=TRUE, results='hide',message=FALSE}
+mir_expr <- expression_preprocessing(mir_expr,missing_value = 0,missing_value_filter = 90 ,
+                                      variance_filter = 0.2, mean_filter = 0.2)
+```
+
+```{r, echo=FALSE}
+sprintf("The number of miRNAs left after the filtering are: %s",ncol(mir_expr))
+```
+
+## B) Building regression models
+
+```{r,results = 'hide', warning=FALSE,cache=TRUE, message=FALSE}
+results <- regression_results(gene_expr = gene_expr, mir_expr = mir_expr, 
+                              model_choice = 's', rsq_filter = 0.2)
+```
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(results[1:5,1:5])
+```
+
+
+## 1.2) Converting predictions tool into matrix
+```{r, warning=FALSE,cache=TRUE, message=FALSE}
+targetscan <- convert_tool_data_into_matrix(pred_data = targetscan_pred[1:1000,],miRNA_colname = "miRNA",
+                                            gene_colname = "Gene.ID",score_colname = "context...score")
+```
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(targetscan[1:5,1:5])
+```
+
+## 3) Convert gene ids and miRNA ids into a common format for all matrices
+
+```{r,results = 'hide', warning=FALSE,cache=TRUE, message=FALSE}
+
+converted_regression_matrix <- gene_miRNA_id_conversion(mat_data = results,cgid = "ensembl_gene_id_version",
+                                                        mir_bool = FALSE) 
+
+```
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(converted_regression_matrix[2:6,1:5])
+```
+
+## 4) Perform analysis and get results
+
+A) Extract common genes and miRNAs for all matrices
+
+```{r,warning=FALSE,cache=TRUE, message=FALSE}
+
+tool_list <- list(sample_targetscan, sample_mirwalk, sample_pita)
+common_list <- common_data(gene_miRNA_id_conversion(results,cgid = 'ensembl_gene_id_version', mir_bool = FALSE)
+                           , tool_list, tool_names = c('targetscan','mirwalk','pita'))
+```

@@ -8,39 +8,57 @@
 expression_preprocessing <- function(expr_data,missing_value_filter = 0,missing_value,
                                      variance_filter = 0,mean_filter = 0){
 
-                              plot(hist(expr_data), border = "blue", xlab = "initial expression values",
-                                   ylab = "initial frequency")
+                              hist(expr_data, border = "blue", xlab = "initial expression values",
+                                   ylab = "initial frequency", main = "initial histogram of expression data")
 
                               #missing value filter
                               if(missing_value_filter){
                               res <- colSums(expr_data == missing_value)/nrow(expr_data)*100
                               expr_data <- expr_data[,-which(res>missing_value_filter)]
                               }
+
                               #variance filter
                               if(variance_filter){
-                              l <- c()
-                              for(x in seq(1,ncol(expr_data), 1)){
-                                l <- c(l, var(expr_data[,x]))
-                              }
-                              u <- which(l < quantile(l,variance_filter))
 
-                              expr_data <- expr_data[,-u]
-                              }
+                                l <- c()
+                                expr_data <- tryCatch({
+                                  for(x in seq(1,ncol(expr_data), 1)){
+                                    l <- c(l, var(expr_data[,x]))
+                                  }
+                                  u <- which(l < quantile(l,variance_filter))
 
+                                  expr_data <- expr_data[,-u]
+                                  expr_data
+                                  }
+                                  ,
+                                  error = function(e){
+                                      stop("The variance_filter value is very high, please try a lower value ")
+                                  }
+
+                                  )
+                              }
 
                               if(mean_filter){
                                 l <- c()
-                                for(x in seq(1,ncol(expr_data), 1)){
-                                  l <- c(l, mean(expr_data[,x]))
-                                }
-                                print(l)
-                                u <- which(l < quantile(l,mean_filter))
+                                expr_data <- tryCatch({
+                                  for(x in seq(1,ncol(expr_data), 1)){
+                                    l <- c(l, mean(expr_data[,x]))
+                                  }
+                                  print(l)
+                                  u <- which(l < quantile(l,mean_filter))
 
-                                expr_data <- expr_data[,-u]
+                                  expr_data <- expr_data[,-u]
+                                  expr_data
+                                },
+                                  error = function(e){
+                                    stop("The mean_filter value is very high, please try a lower value ")
+                                  }
+                                )
                               }
 
-                              plot(hist(expr_data), border = "blue", xlab = "final expression values",
-                                    ylab = "final frequency")
+                              hist(expr_data, border = "blue", xlab = "final expression values",
+                                    ylab = "final frequency", main = "final histogram of expression data")
+
                               return(as.data.frame(expr_data))
 }
 

@@ -4,16 +4,21 @@
 \alias{convert_tool_data_into_matrix}
 \title{Convert tool prediction dataframe into a matrix with rows as miRNAs, columns as genes and scores as values}
 \usage{
-convert_tool_data_into_matrix(pred_data, miRNA_index, gene_index, score_index)
+convert_tool_data_into_matrix(
+  pred_data,
+  miRNA_colname,
+  gene_colname,
+  score_colname
+)
 }
 \arguments{
 \item{pred_data}{The predictions in the form of a data frame}
 
-\item{miRNA_index}{The column index of miRNA in the dataframe}
+\item{miRNA_colname}{The column name of miRNA in the dataframe}
 
-\item{gene_index}{The column index of gene in the dataframe}
+\item{gene_colname}{The column name of gene in the dataframe}
 
-\item{score_index}{The column index of scores in your dataframe}
+\item{score_colname}{The column name of scores in your dataframe}
 }
 \description{
 Convert tool prediction dataframe into a matrix with rows as miRNAs, columns as genes and scores as values

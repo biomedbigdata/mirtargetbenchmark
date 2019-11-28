@@ -4,14 +4,23 @@
 \alias{common_data}
 \title{extract common genes and miRNAs from all the tool prediction matrices and regression matrix}
 \usage{
-common_data(reg_mat, tools, filter = NA)
+common_data(
+  reg_mat,
+  tools,
+  tool_names,
+  filter_bool = FALSE,
+  filter_value = NA,
+  filter_threshold = 0.95
+)
 }
 \arguments{
 \item{reg_mat}{A matrix containg the regression coefficients}
 
 \item{tools}{A list containing prediction matrices/dataframes from different tools.Each element in the list is a matrix/dataframe}
 
-\item{filter}{Genes/miRNAs with more than 95\% values equal to filter will be removed for all the tools. NA by default.}
+\item{tool_names}{A vector of the names of the tools in the same sequence as tools.}
+
+\item{filter}{Genes/miRNAs with more than filter_threshold values equal to filter will be removed for all the tools. NA by default.}
 }
 \description{
 extract common genes and miRNAs from all the tool prediction matrices and regression matrix
