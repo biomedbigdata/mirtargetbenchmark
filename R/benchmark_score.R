@@ -15,9 +15,8 @@ tool_vs_regression <- function(reg_mat, tool_mat_list, tool_names, threshold =  
 
                     #convert the dataframes in the list into vectors and store in vector_tools list
                     for (x in seq(1,length(tool_mat_list),1)) {
-
                       vector_tools <- list.append(vector_tools, as.vector(unlist(tool_mat_list[[tool_names[x]]])))
-                    }
+                  }
 
                     names(vector_tools) <- tool_names
 
@@ -25,8 +24,8 @@ tool_vs_regression <- function(reg_mat, tool_mat_list, tool_names, threshold =  
                     reg_coeff_vector <- as.vector(unlist(reg_mat))
 
                     #convert the vector into binary vector using the threshold value
-                    reg_coeff_vector[reg_coeff_vector > threshold ] <- 0
-                    reg_coeff_vector[reg_coeff_vector != 0 ] <- 1
+                    reg_coeff_vector[which(reg_coeff_vector > threshold) ] <- 0
+                    reg_coeff_vector[which(reg_coeff_vector != 0) ] <- 1
 
 
                     all_tool_analysis = list()
@@ -40,6 +39,9 @@ tool_vs_regression <- function(reg_mat, tool_mat_list, tool_names, threshold =  
 
                       #keep non zero scores for tool vectors and keep the corresponding values in regression vector
                       keep_indices <- which(vector_tools1 != 0)
+                      #keep_indices2 <- which(reg_coeff_vector1 != 0)
+                      #keep_indices <- c(keep_indices1,keep_indices2)
+
                       vector_tools1 <- vector_tools1[keep_indices]
                       reg_coeff_vector1 <- reg_coeff_vector1[keep_indices]
 
@@ -52,8 +54,8 @@ tool_vs_regression <- function(reg_mat, tool_mat_list, tool_names, threshold =  
                         quantiles <- quantile(vector_tools2, x)
 
                         #threshold based on the quantiles
-                        vector_tools2[vector_tools2 >  quantiles] <- 1
-                        vector_tools2[vector_tools2 != 1 ] <- 0
+                        vector_tools2[which(vector_tools2 >  quantiles)] <- 1
+                        vector_tools2[which(vector_tools2 != 1) ] <- 0
 
                         #calculate various metrics to perform the analysis
                         tp <- length(intersect(which(vector_tools2 == 1),which(reg_coeff_vector1 == 1)))
@@ -67,10 +69,7 @@ tool_vs_regression <- function(reg_mat, tool_mat_list, tool_names, threshold =  
 
                       }
 
-                      plot(analysis$SENS, analysis$PPV, type = "l", lty = 1, col = "blue"
-                              , xlab = "recall", ylab = "precision"  , main = tool_names[elem])
-
-                      all_tool_analysis <- list.append(all_tool_analysis,analysis)
+                     all_tool_analysis <- list.append(all_tool_analysis,analysis)
                    }
 
                   names(all_tool_analysis) <- tool_names

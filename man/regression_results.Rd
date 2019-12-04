@@ -4,12 +4,12 @@
 \alias{regression_results}
 \title{Regression models on the expression data}
 \usage{
-regression_results(gene_expr, mir_expr, model_choice, rsq_filter)
+regression_results(dependent_expr, independent_expr, model_choice, rsq_filter)
 }
 \arguments{
-\item{gene_expr}{input  preprocessed gene expression matrix}
+\item{dependent_expr}{input  preprocessed dependent expression matrix}
 
-\item{mir_expr}{input preprocessed miRNA expression matrix}
+\item{independent_expr}{input preprocessed independent expression matrix}
 
 \item{model_choice}{String input that specifies the regression model to be used.
 'e','l','r' and 's' for elastic net, lasso, ridge and simple linear regression respectievly.}

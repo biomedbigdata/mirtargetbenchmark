@@ -11,10 +11,6 @@ regression_vs_tool <- function(reg_mat,tool_mat_list,tool_names){
                       #convert the regression matrix into a vector
                       reg_coeff_vector <- as.vector(unlist(reg_mat))
 
-                      print(class(reg_coeff_vector))
-
-                      hist(reg_coeff_vector)
-
                       vector_tools <- list()
 
                       #convert the dataframes in the list into vectors and store in vector_tools list
@@ -27,22 +23,25 @@ regression_vs_tool <- function(reg_mat,tool_mat_list,tool_names){
 
                       analysis <- list()
 
+                      min_coeff <- min(reg_coeff_vector)
+
                       for (tool in seq(1,length(vector_tools),1)) {
 
 
                         vector_tools1 <- vector_tools[[tool_names[tool]]]
+                        vector_results <- reg_coeff_vector
 
 
-                        something <- foreach (x = seq(-1,0,0.01), .combine =rbind,.inorder = TRUE) %do% {
+                        something <- foreach (x = seq(min_coeff,0,-min_coeff/10), .combine =rbind,.inorder = TRUE) %do% {
 
-                          vector_results1 <- reg_coeff_vector
+                          vector_results1 <- vector_results
 
-                          hist(reg_coeff_vector)
+
 
                           #threshold the regression coefficients based on the iterator x
-                          vector_results1[vector_results1 > x ] <- 0
+                          vector_results1[which(vector_results1 > x) ] <- 0
 
-                          vector_results1[vector_results1 != 0] <- 1
+                          vector_results1[which(vector_results1 != 0)] <- 1
 
                           #calculate various metrics to perform analysis
                           class_1 <- length(which(vector_results1 == 1))
@@ -57,7 +56,6 @@ regression_vs_tool <- function(reg_mat,tool_mat_list,tool_names){
                           ppv <- tp/(tp+fp)
                           data.frame(ones = class_1,zeros = class_0,threshold = x, TP = tp, TN = tn, FP = fp, FN = fn,SENS = sens, FPR = 1 - spec,PPV = ppv)
                         }
-
 
 
                         analysis <- list.append(analysis,something)

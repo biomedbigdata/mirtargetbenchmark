@@ -44,7 +44,7 @@ expression_preprocessing <- function(expr_data,missing_value_filter = 0,missing_
                                   for(x in seq(1,ncol(expr_data), 1)){
                                     l <- c(l, mean(expr_data[,x]))
                                   }
-                                  print(l)
+
                                   u <- which(l < quantile(l,mean_filter))
 
                                   expr_data <- expr_data[,-u]

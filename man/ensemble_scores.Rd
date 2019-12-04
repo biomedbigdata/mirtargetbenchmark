@@ -11,7 +11,7 @@ ensemble_scores(tool_list, tool_names, performance_list)
 
 \item{tool_names}{A list containing the names of all the tools in the dataframes}
 
-\item{performance_list}{A list containing performance scores of all the tools}
+\item{performance_list}{A list containing performance scores of all the tools in decreasing order}
 }
 \description{
 Functionality to calculate the ensemble scores for all the tools

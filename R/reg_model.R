@@ -4,22 +4,22 @@
 #' @import foreach
 #' @import doSNOW
 #' @import parallel
-#' @param gene_expr input  preprocessed gene expression matrix
-#' @param mir_expr  input preprocessed miRNA expression matrix
+#' @param dependent_expr input  preprocessed dependent expression matrix
+#' @param independent_expr  input preprocessed independent expression matrix
 #' @param model_choice String input that specifies the regression model to be used.
 #' 'e','l','r' and 's' for elastic net, lasso, ridge and simple linear regression respectievly.
 #' @param rsq_filter A filter to select models/genes using the r squared value.All genes with rsq < rsq_filter will be removed.
-regression_results <- function(gene_expr , mir_expr , model_choice, rsq_filter){
+regression_results <- function(dependent_expr , independent_expr , model_choice, rsq_filter){
 
                       #select and compute the model
                       switch(model_choice,
                       e = {
-                        results <- foreach(x = seq(1,ncol(gene_expr),1),.combine = cbind,.inorder = TRUE,
+                        results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
                                 .packages = c('glmnet','doSNOW'))%dopar%{
 
                                   #y/gene is the dependent variable and X/miRNAs are the independent variables
-                                  y <- as.matrix(gene_expr[, x])
-                                  X <- as.matrix(mir_expr)
+                                  y <- as.matrix(dependent_expr[, x])
+                                  X <- as.matrix(independent_expr)
 
                                   #calculate five elastic net model with alpha step size = 0.2
                                   models <- foreach(alpha_value = seq(0, 1, 0.2)) %do% {
@@ -47,12 +47,12 @@ regression_results <- function(gene_expr , mir_expr , model_choice, rsq_filter){
 
                         }},
                       l = {
-                        results <- foreach(x = seq(1,ncol(gene_expr),1),.combine = cbind,.inorder = TRUE,
+                        results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
                                              .packages = c('glmnet','doSNOW'))%dopar%{
 
 
-                                    y <- as.matrix(gene_expr[, x ])
-                                    X <- as.matrix(mir_expr)
+                                    y <- as.matrix(dependent_expr[, x ])
+                                    X <- as.matrix(independent_expr)
 
 
                                     #compute the lasso regression model
@@ -72,11 +72,11 @@ regression_results <- function(gene_expr , mir_expr , model_choice, rsq_filter){
                                              }
                       },
                       r = {
-                        results <- foreach(x = seq(1,ncol(gene_expr),1),.combine = cbind,.inorder = TRUE,
+                        results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
                                            .packages = c('glmnet','doSNOW'))%dopar%{
 
-                                             y <- as.matrix(gene_expr[, x ])
-                                             X <- as.matrix(mir_expr)
+                                             y <- as.matrix(dependent_expr[, x ])
+                                             X <- as.matrix(independent_expr)
 
 
                                              #compute the ridge regression model
@@ -99,14 +99,14 @@ regression_results <- function(gene_expr , mir_expr , model_choice, rsq_filter){
 
                       },
                       s = {
-                        results <- foreach(x = seq(1,ncol(gene_expr),1), .combine = cbind, .inorder = TRUE)%dopar%{
+                        results <- foreach(x = seq(1,ncol(dependent_expr),1), .combine = cbind, .inorder = TRUE)%dopar%{
 
                           #first column should be the gene and other columns should be miRNAs for input of lm
-                          working_data <- as.data.frame(cbind(gene_expr[,x], mir_expr))
-                          colnames(working_data)[1] = "gene"
+                          working_data <- as.data.frame(cbind(dependent_expr[,x], independent_expr))
+                          colnames(working_data)[1] = "dependent_variable"
 
                           #compute the simple linear regressio model
-                          model <- lm(gene~. ,data  = working_data)
+                          model <- lm(dependent_variable~. ,data  = working_data)
 
                           #obtain the coefficients
                           coefficients <- as.vector(model$coefficients)
@@ -122,8 +122,8 @@ regression_results <- function(gene_expr , mir_expr , model_choice, rsq_filter){
                       stop("Incorrect input!!")
                       )
 
-                      rows <- c("rsq", colnames(mir_expr))
-                      colnames(results) <- colnames(gene_expr)
+                      rows <- c("rsq", colnames(independent_expr))
+                      colnames(results) <- colnames(dependent_expr)
                       rownames(results) <- rows
 
                       #filter the models using rsq_filter

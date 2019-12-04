@@ -3,25 +3,37 @@
 #' @import rlist
 #' @param tool_list A list containing the data frames containing scores for all the tools
 #' @param tool_names A list containing the names of all the tools in the dataframes
-#' @param performance_list A list containing performance scores of all the tools
+#' @param performance_list A list containing performance scores of all the tools in decreasing order
 
 ensemble_scores <- function(tool_list, tool_names, performance_list){
 
-                    vector_tools <- list()
-                    #convert the dataframes in the list into vectors and store in vector_tools list
+                    names(tool_list) <- tool_names
+
                     for (x in 1:length(tool_list)) {
-                      vector_tools <- list.append(vector_tools, as.vector(unlist(tool_list[[tool_names[x]]])))
+                      tool_list[[tool_names[x]]] <- (tool_list[[tool_names[x]]] - min(tool_list[[tool_names[x]]]))/(max(tool_list[[tool_names[x]]]) - min(tool_list[[tool_names[x]]]))
                     }
-                    names(vector_tools) <- tool_names
+
 
                     #scale the scores
+                    weights <- list()
+                    for(x in 1:length(tool_list)){
+                      weights <- list.append(weights, (length(tool_list) - x + 1)/length(tool_list))
 
+                    }
+
+
+                    names(weights) <- tool_names
 
                     #calculate the cumulative scores
-                    scores = numeric(length = length(vector_tools[[tool_names[1]]]))
+                    scores = matrix(0,nrow = nrow(tool_list[[tool_names[1]]]),
+                                    ncol = ncol(tool_list[[tool_names[1]]]))
+
+
                     for(x in 1:length(tool_list)){
-                    scores = scores + performance_list[[tool_names[x]]]*vector_tools[[tool_names[x]]]
+                    scores = scores + weights[[tool_names[x]]]*tool_list[[tool_names[x]]]
                     }
+
+                    scores <- (scores - min(scores))/(max(scores) - min(scores))
 
                     return(scores)
 

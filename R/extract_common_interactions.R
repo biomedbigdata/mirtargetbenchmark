@@ -49,5 +49,6 @@ common_data <- function(reg_mat,tools,tool_names,filter_bool = FALSE,filter_valu
                   mat <- mat[row_ids,col_ids]
                   common[[tool_names[x]]] <- mat
                 }
+                names(common) <- tool_names
                 return(common)
 }

@@ -45,5 +45,6 @@ convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname
                                                          }
                                  colnames(tool_pred) <- genes
                                  rownames(tool_pred) <- miRNAs
+                                 tool_pred[is.na(tool_pred)] <- 0
                                  return(tool_pred)
 }

@@ -96,7 +96,7 @@ knitr::kable(mir_expr[1:5,1:5])
 
 ## A) Preprocessing of expression data
 
-```{r,results='hide',cache=TRUE, message=FALSE}
+```{r,results='hide', message=FALSE}
 gene_expr <- expression_preprocessing(gene_expr,missing_value = -9.9658,missing_value_filter = 90 ,
                                       variance_filter = 0.2, mean_filter = 0.2)
 ```
@@ -107,7 +107,7 @@ sprintf("The number of genes left after the filtering are: %s",ncol(gene_expr))
 ```
 
 
-```{r,cache=TRUE, results='hide',message=FALSE}
+```{r, results='hide',message=FALSE}
 mir_expr <- expression_preprocessing(mir_expr,missing_value = 0,missing_value_filter = 90 ,
                                       variance_filter = 0.2, mean_filter = 0.2)
 ```
@@ -118,8 +118,8 @@ sprintf("The number of miRNAs left after the filtering are: %s",ncol(mir_expr))
 
 ## B) Building regression models
 
-```{r,results = 'hide', warning=FALSE,cache=TRUE, message=FALSE}
-results <- regression_results(gene_expr = gene_expr, mir_expr = mir_expr, 
+```{r,results = 'hide', warning=FALSE, message=FALSE}
+results <- regression_results(dependent_expr = gene_expr, independent_expr = mir_expr, 
                               model_choice = 's', rsq_filter = 0.2)
 ```
 
@@ -129,7 +129,7 @@ knitr::kable(results[1:5,1:5])
 
 
 ## 1.2) Converting predictions tool into matrix
-```{r, warning=FALSE,cache=TRUE, message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 targetscan <- convert_tool_data_into_matrix(pred_data = targetscan_pred[1:1000,],miRNA_colname = "miRNA",
                                             gene_colname = "Gene.ID",score_colname = "context...score")
 ```
@@ -140,7 +140,7 @@ knitr::kable(targetscan[1:5,1:5])
 
 ## 3) Convert gene ids and miRNA ids into a common format for all matrices
 
-```{r,results = 'hide', warning=FALSE,cache=TRUE, message=FALSE}
+```{r,results = 'hide', warning=FALSE, message=FALSE}
 
 converted_regression_matrix <- gene_miRNA_id_conversion(mat_data = results,cgid = "ensembl_gene_id_version",
                                                         mir_bool = FALSE) 
@@ -153,11 +153,50 @@ knitr::kable(converted_regression_matrix[2:6,1:5])
 
 ## 4) Perform analysis and get results
 
-A) Extract common genes and miRNAs for all matrices
+A) Regression vs Confidence Scores
 
-```{r,warning=FALSE,cache=TRUE, message=FALSE}
+
+```{r,warning=FALSE, message=FALSE}
 
 tool_list <- list(sample_targetscan, sample_mirwalk, sample_pita)
-common_list <- common_data(gene_miRNA_id_conversion(results,cgid = 'ensembl_gene_id_version', mir_bool = FALSE)
+
+#extracting common genes and miRNAs
+common_list <- common_data(sample_simple_regression_results
                            , tool_list, tool_names = c('targetscan','mirwalk','pita'))
+
+#list of tool matrices
+common_list_1 <- list(common_list[["targetscan"]], common_list[["mirwalk"]], common_list[["pita"]])
+
+#results and analysis
+output <- tool_vs_regression(common_list[["regression"]],common_list_1, tool_names = c('targetscan','mirwalk','pita'))
+
+
+
 ```
+
+```{r, echo=FALSE, results='asis'}
+print("The green, red and pink lines represent TargetScan , PITA and miRWalk respectively")
+```
+
+
+```{r, echo=FALSE, results='asis'}
+output$targetscan$threshold <- (output$targetscan$threshold - min(output$targetscan$threshold))/(max(output$targetscan$threshold) - min(output$targetscan$threshold))
+output$mirwalk$threshold <- (output$mirwalk$threshold - min(output$mirwalk$threshold))/(max(output$mirwalk$threshold) - min(output$mirwalk$threshold))
+output$pita$threshold <- (output$pita$threshold - min(output$pita$threshold))/(max(output$pita$threshold) - min(output$pita$threshold))
+
+plot(output$targetscan$threshold, output$targetscan$PPV, type = 'l',ylim = c(0,1), xlim = c(0,1), col = "green", xlab = "thresholds", ylab = "precision")
+lines(output$pita$threshold, output$pita$PPV, type = 'l', col = "red")
+lines(output$mirwalk$threshold, output$mirwalk$PPV, type = 'l', col = "pink")
+
+plot(output$targetscan$threshold, output$targetscan$SENS, type = 'l',ylim = c(0,1), xlim = c(0,1), col = "green", xlab = "thresholds", ylab = "precision")
+lines(output$pita$threshold, output$pita$SENS, type = 'l', col = "red")
+lines(output$mirwalk$threshold, output$mirwalk$SENS, type = 'l', col = "pink")
+
+```
+
+
+B) Regression vs Binding Sites
+
+
+
+
