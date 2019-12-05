@@ -242,9 +242,7 @@ output_1 <- regression_vs_tool(common_list[["regression"]],common_list_1, tool_n
 
 ###C) Ensemble method with discrete weights
 
-```{r, echo=FALSE, results='asis'}
-library(rlist)
-```
+
 
 
 ```{r,warning=FALSE, message=FALSE}
@@ -256,6 +254,8 @@ names(ppv_performance) <- c("targetscan", "mirwalk", "pita")
 ppv_performance <- sort(ppv_performance, decreasing = TRUE)
 
 new_common_list <- list()
+
+library(rlist)
 
 for (x in 1:length(ppv_performance)) {
   new_common_list <- list.append(new_common_list, common_list_scores[[names(ppv_performance)[x]]])

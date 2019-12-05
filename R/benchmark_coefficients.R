@@ -1,5 +1,6 @@
 #' Benchmark tools by comparing regression against tools
 #' @export
+#' @import rlist
 #' @param reg_mat A matrix containing the regression coefficients in the form of a matrix/dataframe.
 #' @param tool_mat_list A list containing dataframes from different tools.
 #' @param tool_names A list of the names of tools in the same order as tool_mat_list

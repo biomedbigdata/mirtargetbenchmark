@@ -1,7 +1,6 @@
 #' Benchmark various tools against regression using the scores.
 #' @export
-#' @import ROCR
-#' @import pracma
+#' @import rlist
 #' @import foreach
 #' @param reg_mat A matrix containing the regression coefficients in the form of a matrix/dataframe.
 #' @param tool_mat_list A list containing dataframes from different tools.

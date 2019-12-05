@@ -10,7 +10,10 @@ Description: This package provides the following functionalities:
     3) Convert predictions from tools into matrix format.
     4) Convert gene/miRNA ids into desired format for expression/tool prediction matrices.
     5) Extract common gene/miRNA interactions from the tools and regression coefficient matrix.
-    6) Benchmark the tool using plots and other metrics.
+    6) Extract the miRNAs with more than certain vaidated gene targets from miRTarBase.
+    7) Benchmark the tools using binding sites.
+    8) Benchmark the tools using confidence scores.
+    9) Ensemble method for target prediction.
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
