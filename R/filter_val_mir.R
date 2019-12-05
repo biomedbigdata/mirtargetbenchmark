@@ -16,7 +16,7 @@ validated_miRNA_filter <- function(matrix_list, matrix_names, val_mat, threshold
                             }
                           }
 
-                          print(length(keep))
+
 
                           val_mat <- val_mat[keep,]
 
@@ -27,7 +27,7 @@ validated_miRNA_filter <- function(matrix_list, matrix_names, val_mat, threshold
                           for (x in seq(1, length(matrix_list),1)) {
                             matrix_list[[matrix_names[x]]] <- matrix_list[[matrix_names[[x]]]][keep1,]
                           }
-                          print(rownames(matrix_list[[matrix_names[1]]]))
+
                           names(matrix_list) <- matrix_names
                           return(matrix_list)
 }

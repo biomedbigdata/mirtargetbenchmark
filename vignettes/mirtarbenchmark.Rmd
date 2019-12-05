@@ -23,15 +23,19 @@ There is no standard to compare these tools as sequence based tools don't use co
 
 In this package we have implemented an approach to benchmark different sequence based tools using gene and miRNA expression data. We build a regression model on the expression data to predict the targets. We have implemented the following two approaches to benchmark the tools:
 
-1) Convert the regression coefficients using different thresholds and convert the predictions from tools into binary data based on the number of binding sites.The regression results are considered as true labels and the predictions from tools are considered as predicted labels. The precision value obtained for different tools on comparison against regression is used to benchmark i.e the tools with higher precision value are better than the tools with low precision value.    
+####1) 
+Convert the regression coefficients using different thresholds and convert the predictions from tools into binary data based on the number of binding sites.The regression results are considered as true labels and the predictions from tools are considered as predicted labels. The precision value obtained for different tools on comparison against regression is used to benchmark i.e the tools with higher precision value are better than the tools with low precision value.    
 
-2) Convert the regression coefficient into binary data using a threshold value of zero.Whereas to convert the prediction data from tools into binary data, the quantiles of scores provided by the tools were used as thresholds.Precision and sensitivity were used for benchmarking the tools.
+####2)
+Convert the regression coefficient into binary data using a threshold value of zero.Whereas to convert the prediction data from tools into binary data, the quantiles of scores provided by the tools were used as thresholds.Precision and sensitivity were used for benchmarking the tools.
 
-##General Workflow
+###General Workflow
+
+Note: Some functions are using foreach %dopar% internally.If the user wishes to parallelize, packages like doSNOW can be used to parallelize the functions for faster implementation.
 
 The mirtargetbenchmark workflow starts from two ends,
 
-1.1) 
+###1.1) 
 
       A) Filtering of the gene and miRNA expression data
       
@@ -39,7 +43,7 @@ The mirtargetbenchmark workflow starts from two ends,
 
 and 
 
-1.2)  
+###1.2)  
            
        A) Organising the downloaded data from tools into matrix format.
       
@@ -48,13 +52,13 @@ and
 Then, steps 3 and 4 have to be implemented in order.
 
 
-3)  
+###3)  
     
         
         Extract common miRNA/gene ids from all the tools after performing some filtering on the matrices 
         obtained from the tools
    
-4) 
+###4) 
   
     
         Obtain precision recall curves to pictorially represent the analysis and perform the benchmarking.
@@ -153,8 +157,7 @@ knitr::kable(converted_regression_matrix[2:6,1:5])
 
 ## 4) Perform analysis and get results
 
-A) Regression vs Confidence Scores
-
+###A) Regression vs Confidence Scores
 
 ```{r,warning=FALSE, message=FALSE}
 
@@ -164,13 +167,18 @@ tool_list <- list(sample_targetscan, sample_mirwalk, sample_pita)
 common_list <- common_data(sample_simple_regression_results
                            , tool_list, tool_names = c('targetscan','mirwalk','pita'))
 
+#using miRNAs with more than 500 validated target genes in miRTarBase
+common_validated_targets <- validated_miRNA_filter(common_list, matrix_names = c("targetscan","mirwalk","pita",
+                                  "regression"),mirtarbase7, threshold_valmir = 100)
+
 #list of tool matrices
-common_list_1 <- list(common_list[["targetscan"]], common_list[["mirwalk"]], common_list[["pita"]])
+common_list_scores <- list(common_validated_targets[["targetscan"]], common_validated_targets[["mirwalk"]],                                  common_validated_targets[["pita"]])
+
+#name the elements (to be used in ensembl methods)
+names(common_list_scores) <- c("targetscan", "mirwalk", "pita")
 
 #results and analysis
-output <- tool_vs_regression(common_list[["regression"]],common_list_1, tool_names = c('targetscan','mirwalk','pita'))
-
-
+output <- tool_vs_regression(common_validated_targets[["regression"]],common_list_scores, tool_names = c('targetscan','mirwalk','pita'))
 
 ```
 
@@ -180,6 +188,7 @@ print("The green, red and pink lines represent TargetScan , PITA and miRWalk res
 
 
 ```{r, echo=FALSE, results='asis'}
+
 output$targetscan$threshold <- (output$targetscan$threshold - min(output$targetscan$threshold))/(max(output$targetscan$threshold) - min(output$targetscan$threshold))
 output$mirwalk$threshold <- (output$mirwalk$threshold - min(output$mirwalk$threshold))/(max(output$mirwalk$threshold) - min(output$mirwalk$threshold))
 output$pita$threshold <- (output$pita$threshold - min(output$pita$threshold))/(max(output$pita$threshold) - min(output$pita$threshold))
@@ -188,15 +197,116 @@ plot(output$targetscan$threshold, output$targetscan$PPV, type = 'l',ylim = c(0,1
 lines(output$pita$threshold, output$pita$PPV, type = 'l', col = "red")
 lines(output$mirwalk$threshold, output$mirwalk$PPV, type = 'l', col = "pink")
 
-plot(output$targetscan$threshold, output$targetscan$SENS, type = 'l',ylim = c(0,1), xlim = c(0,1), col = "green", xlab = "thresholds", ylab = "precision")
+plot(output$targetscan$threshold, output$targetscan$SENS, type = 'l',ylim = c(0,1), xlim = c(0,1), col = "green", xlab = "thresholds", ylab = "recall")
 lines(output$pita$threshold, output$pita$SENS, type = 'l', col = "red")
 lines(output$mirwalk$threshold, output$mirwalk$SENS, type = 'l', col = "pink")
 
 ```
 
 
-B) Regression vs Binding Sites
+###B) Regression vs Binding Sites
+
+```{r,warning=FALSE, message=FALSE}
+
+#covert binding sites into binary
+mircode[mircode > 1] <- 1
+mirtarbase[mirtarbase > 1] <- 1
+mirtarbase7[mirtarbase7 > 1] <- 1
+
+tool_list <- list(mircode, mirtarbase, mirtarbase7)
+
+#extracting common genes and miRNAs
+common_list <- common_data(sample_simple_regression_results
+                           , tool_list, tool_names = c('mircode','mirtarbase','mirtarbase7'))
+
+#list of tool matrices
+common_list_1 <- list(common_list[["mircode"]], common_list[["mirtarbase"]], common_list[["mirtarbase7"]])
+
+#results and analysis
+output_1 <- regression_vs_tool(common_list[["regression"]],common_list_1, tool_names = c('mircode','mirtarbase','mirtarbase7'))
+
+```
+
+```{r, echo=FALSE, results='asis'}
+
+   print("The metrics shown below were obtained using a threshold of zero for coefficients")
+   precision <- cbind(output_1$mircode$PPV[11], output_1$mirtarbase$PPV[11], output_1$mirtarbase7$PPV[11])
+   recall <- cbind(output_1$mircode$SENS[11], output_1$mirtarbase$SENS[11], output_1$mirtarbase7$SENS[11])
+   metrics <- rbind(precision, recall)
+   rownames(metrics) <- c("precision", "recall")
+   colnames(metrics) <- c("mircode", "mirtarbase", "mirtarbase7")
+  knitr::kable(metrics)
+  
+```
 
 
+###C) Ensemble method with discrete weights
+
+```{r, echo=FALSE, results='asis'}
+library(rlist)
+```
+
+
+```{r,warning=FALSE, message=FALSE}
+
+ppv_performance <- c(output$targetscan$PPV[1], output$mirwalk$PPV[1], output$pita$PPV[1])
+
+names(ppv_performance) <- c("targetscan", "mirwalk", "pita")
+
+ppv_performance <- sort(ppv_performance, decreasing = TRUE)
+
+new_common_list <- list()
+
+for (x in 1:length(ppv_performance)) {
+  new_common_list <- list.append(new_common_list, common_list_scores[[names(ppv_performance)[x]]])
+}
+
+ensemble_predictions <- ensemble_scores(new_common_list, tool_names = names(ppv_performance), ppv_performance)
+
+```
+
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(ensemble_predictions[,1:5]))
+```
+
+
+```{r,warning=FALSE, message=FALSE}
+
+#compare the performance with other tools
+common_list_scores <- list.append(common_list_scores, ensemble_predictions)
+
+output_with_ensembl <- tool_vs_regression(common_validated_targets[["regression"]],
+                                          common_list_scores, tool_names = c(c('targetscan','mirwalk','pita',
+                                                                               'ensembl')))
+
+
+
+```
+
+```{r, echo=FALSE, results='asis'}
+print("The green, red, pink and black lines represent TargetScan , PITA, miRWalk and ensemble respectively")
+```
+
+
+```{r, echo=FALSE, results='asis'}
+
+#scale all the scores to have range of 0-1
+output_with_ensembl$targetscan$threshold <- (output_with_ensembl$targetscan$threshold - min(output_with_ensembl$targetscan$threshold))/(max(output_with_ensembl$targetscan$threshold) - min(output_with_ensembl$targetscan$threshold))
+output_with_ensembl$mirwalk$threshold <- (output_with_ensembl$mirwalk$threshold - min(output_with_ensembl$mirwalk$threshold))/(max(output_with_ensembl$mirwalk$threshold) - min(output_with_ensembl$mirwalk$threshold))
+output_with_ensembl$pita$threshold <- (output_with_ensembl$pita$threshold - min(output_with_ensembl$pita$threshold))/(max(output_with_ensembl$pita$threshold) - min(output_with_ensembl$pita$threshold))
+
+
+plot(output_with_ensembl$targetscan$threshold, output_with_ensembl$targetscan$PPV, type = 'l',ylim = c(0,1), xlim = c(0,1), col = "green", xlab = "thresholds", ylab = "precision")
+lines(output_with_ensembl$pita$threshold, output_with_ensembl$pita$PPV, type = 'l', col = "red")
+lines(output_with_ensembl$mirwalk$threshold, output_with_ensembl$mirwalk$PPV, type = 'l', col = "pink")
+lines(output_with_ensembl$ensembl$threshold, output_with_ensembl$ensembl$PPV, type = 'l', col = "black")
+
+
+plot(output_with_ensembl$targetscan$threshold, output_with_ensembl$targetscan$SENS, type = 'l',ylim = c(0,1), xlim = c(0,1), col = "green", xlab = "thresholds", ylab = "recall")
+lines(output_with_ensembl$pita$threshold, output_with_ensembl$pita$SENS, type = 'l', col = "red")
+lines(output_with_ensembl$mirwalk$threshold, output_with_ensembl$mirwalk$SENS, type = 'l', col = "pink")
+lines(output_with_ensembl$ensembl$threshold, output_with_ensembl$ensembl$SENS, type = 'l', col = "black")
+```
 
 
