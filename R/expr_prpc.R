@@ -8,7 +8,7 @@
 expression_preprocessing <- function(expr_data,missing_value_filter = 0,missing_value,
                                      variance_filter = 0,mean_filter = 0){
 
-                              hist(expr_data, border = "blue", xlab = "initial expression values",
+                              hist(as.numeric(unlist(as.vector(expr_data), use.names = FALSE)), border = "blue", xlab = "initial expression values",
                                    ylab = "initial frequency", main = "initial histogram of expression data")
 
                               #missing value filter
@@ -56,7 +56,7 @@ expression_preprocessing <- function(expr_data,missing_value_filter = 0,missing_
                                 )
                               }
 
-                              hist(expr_data, border = "blue", xlab = "final expression values",
+                              hist(as.numeric(unlist(as.vector(expr_data), use.names = FALSE)), border = "blue", xlab = "final expression values",
                                     ylab = "final frequency", main = "final histogram of expression data")
 
                               return(as.data.frame(expr_data))

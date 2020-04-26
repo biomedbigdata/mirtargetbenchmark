@@ -17,8 +17,7 @@ Description: This package provides the following functionalities:
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.2
 Imports: biomaRt, miRBaseConverter, doSNOW, glmnet, rlist, pracma, ROCR, dplyr, foreach, parallel
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-

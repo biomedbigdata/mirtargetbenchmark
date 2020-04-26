@@ -37,11 +37,13 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
                                 res <- as.data.frame(miRNA_AccessionToName(rownames(mat_data),targetVersion = dmirid))
                               }
                               else if(dmirid == "Accession"){
-                                cmirid <- ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
+                                # remove the versions from the end of miRNA ids
+                                rownames(mat_data) <- sub("\\.\\d+$", "", rownames(mat_data))
+                                ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
                                 res <- as.data.frame(miRNA_NameToAccession(rownames(mat_data),version = ver))
                               }
                               else{
-                                cmirid <- ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
+                                ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
                                 miRNAVersionConvert(rownames(mat_data), targetVersion = dmirid, exact = TRUE,
                                                     verbose = TRUE)
                               }
@@ -52,9 +54,10 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
                                 rownames(mat_data) <- res[,dmirid]
                               }
                               else{
+
                               mat_data <- mat_data[-which(is.na(res[,dmirid])),]
 
-                              rownames(mat_data) <- na.omit(res[,dmirid])
+                              rownames(mat_data) <- res[,dmirid][-which(is.na(res[,dmirid]))]
 
                               }
                             }

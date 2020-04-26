@@ -12,6 +12,20 @@ convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname
 
                                  pred_data <- pred_data[,c(miRNA_colname,gene_colname,score_colname)]
 
+                                 #remove the NAs from all the columns
+                                 list_indices <- 1:nrow(pred_data)
+                                 if (length(which(is.na(pred_data[miRNA_colname])))>0){
+                                      list_indices <- list_indices[-which(is.na(pred_data[miRNA_colname]))]
+                                 }
+                                 if (length(which(is.na(pred_data[miRNA_colname])))>0){
+                                   list_indices <- list_indices[-which(is.na(pred_data[gene_colname]))]
+                                 }
+                                 if (length(which(is.na(pred_data[miRNA_colname])))>0){
+                                   list_indices <- list_indices[-which(is.na(pred_data[score_colname]))]
+                                 }
+                                 pred_data <- pred_data[list_indices,]
+
+                                 # create vectors for gene names and miRNA names
                                  genes <- unique(pred_data[,gene_colname])
                                  miRNAs <- unique(pred_data[,miRNA_colname])
 
@@ -19,7 +33,11 @@ convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname
                                  colnames(tool_mat) <- genes
                                  rownames(tool_mat) <- miRNAs
 
-                                 tool_pred <- foreach(x = seq(1,length(genes),1), .combine = cbind, .inorder = TRUE,
+                                 if(length(genes) < 1){
+                                   stop("The dataframe is empty or all values are NA")
+                                 }
+
+                                 tool_pred <- foreach(x = seq(1, length(genes),1), .combine = cbind, .inorder = TRUE,
                                                          .packages = c('doSNOW', 'dplyr'))%dopar% {
 
                                                            col <- genes[x]
@@ -41,10 +59,11 @@ convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname
 
                                                            )
 
-
                                                          }
+
                                  colnames(tool_pred) <- genes
                                  rownames(tool_pred) <- miRNAs
+                                 # convert NA's to 0's
                                  tool_pred[is.na(tool_pred)] <- 0
                                  return(tool_pred)
 }
