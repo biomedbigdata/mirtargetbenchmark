@@ -1,6 +1,6 @@
 #' Convert tool prediction dataframe into a matrix with rows as miRNAs, columns as genes and scores as values
 #' @export
-#' @import dplyr
+#' @importFrom dplyr filter
 #' @import foreach
 #' @import parallel
 #' @import doSNOW

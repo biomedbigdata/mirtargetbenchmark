@@ -7,8 +7,8 @@
 gene_miRNA_id_conversion(
   mat_data,
   gene_bool = TRUE,
-  cgid,
-  dgid = "ensembl_gene_id",
+  cgid = "ACCNUM",
+  dgid = "ENSEMBL",
   mir_bool = TRUE,
   cmirid = " ",
   dmirid = "Accession"
@@ -19,9 +19,9 @@ gene_miRNA_id_conversion(
 
 \item{gene_bool}{A boolean value. If it is TRUE, gene ids will be converted.TRUE by default}
 
-\item{cgid}{A string containing current gene id format.}
+\item{cgid}{A string containing current gene id format.'ACCNUM' by default}
 
-\item{dgid}{A string containing desired gene id format.'ensembl_gene_id' by default.}
+\item{dgid}{A string containing desired gene id format.'ENSEMBL' by default.}
 
 \item{mir_bool}{A boolean value. If it is TRUE, miRNA ids will be converted.TRUE by default}
 

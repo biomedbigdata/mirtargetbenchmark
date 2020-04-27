@@ -44,7 +44,7 @@ knitr::kable(targetscan[1:5,1:5])
 
 ## ----results = 'hide', warning=FALSE, message=FALSE---------------------------
 
-converted_regression_matrix <- gene_miRNA_id_conversion(mat_data = results,cgid = "ensembl_gene_id_version",
+converted_regression_matrix <- gene_miRNA_id_conversion(mat_data = results,cgid = "ENSEMBL_VERSION",
                                                         mir_bool = FALSE) 
 
 

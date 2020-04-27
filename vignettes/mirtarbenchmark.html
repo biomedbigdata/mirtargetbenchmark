@@ -11,7 +11,7 @@
 
 <meta name="author" content="Akshit Achara, Markus List" />
 
-<meta name="date" content="2020-04-26" />
+<meta name="date" content="2020-04-27" />
 
 <title>Benchmarking miRNA target prediction tools</title>
 
@@ -180,7 +180,7 @@ summary {
 
 <h1 class="title toc-ignore">Benchmarking miRNA target prediction tools</h1>
 <h4 class="author">Akshit Achara, Markus List</h4>
-<h4 class="date">2020-04-26</h4>
+<h4 class="date">2020-04-27</h4>
 
 </div>
 
@@ -481,7 +481,7 @@ summary {
 </div>
 <div id="convert-gene-ids-and-mirna-ids-into-a-common-format-for-all-matrices" class="section level2">
 <h2>3) Convert gene ids and miRNA ids into a common format for all matrices</h2>
-<pre class="r"><code>converted_regression_matrix &lt;- gene_miRNA_id_conversion(mat_data = results,cgid = &quot;ensembl_gene_id_version&quot;,
+<pre class="r"><code>converted_regression_matrix &lt;- gene_miRNA_id_conversion(mat_data = results,cgid = &quot;ENSEMBL_VERSION&quot;,
                                                         mir_bool = FALSE) </code></pre>
 <table>
 <thead>

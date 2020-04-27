@@ -1,21 +1,21 @@
 #' Convert gene names and miRNA names into ensembl ids and accession ids respectively
 #' @export
-#' @importFrom biomaRt getBM
-#' @importFrom biomaRt useEnsembl
+#' @import org.Hs.eg.db
+#' @import AnnotationDbi
 #' @import miRBaseConverter
 #' @param mat_data expression matrix or tool prediction matrix with columns as genes and rows as miRNAs
-#' @param cgid A string containing current gene id format.
-#' @param dgid A string containing desired gene id format.'ensembl_gene_id' by default.
+#' @param cgid A string containing current gene id format.'ACCNUM' by default
+#' @param dgid A string containing desired gene id format.'ENSEMBL' by default.
 #' @param gene_bool A boolean value. If it is TRUE, gene ids will be converted.TRUE by default
 #' @param mir_bool A boolean value. If it is TRUE, miRNA ids will be converted.TRUE by default
 #' @param cmirid A string containing current miRNA id format.empty by default.version will be automatically detected
 #' @param dmirid A string containing desired miRNA id format.
-gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
-                                     dgid = 'ensembl_gene_id',mir_bool = TRUE,cmirid = ' ', dmirid = 'Accession'){
+gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
+                                     dgid = 'ENSEMBL',mir_bool = TRUE,cmirid = ' ', dmirid = 'Accession'){
 
                               if(gene_bool){
 
-                              if(cgid == 'ensembl_gene_id_version'){
+                              if(cgid == 'ENSEMBL_VERSION'){
                                 #convert the gene ids into ensemble gene ids
                                 colnames(mat_data) <- sub("\\.\\d+$", "", colnames(mat_data))
                               }
@@ -25,13 +25,8 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
                                 # remove the multiple ids for on gene to keep the first id (eg. pita)
                                 colnames(mat_data) <- sub(";.*","", colnames(mat_data))
                                 # convert the gene ids
-                                ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl",host="www.ensembl.org")
-                                ensembl_id <- getBM(attributes=c(dgid,cgid),filters = cgid,
-                                                    values = colnames(mat_data), mart = ensembl)
-
-                                sequenc <- match(colnames(mat_data), ensembl_id[,cgid])
-                                colnames(mat_data) <- ensembl_id[,dgid][sequenc]
-
+                                ensembl_id <- AnnotationDbi::mapIds(org.Hs.eg.db, colnames(mat_data), keytype = cgid, dgid)
+                                colnames(mat_data) <- ensembl_id
                                 mat_data <- mat_data[, !duplicated(colnames(mat_data))]
                               }
                             }
