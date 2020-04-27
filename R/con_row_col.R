@@ -20,7 +20,11 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid,
                                 colnames(mat_data) <- sub("\\.\\d+$", "", colnames(mat_data))
                               }
                               else{
-
+                                # remove the versions from the colnames to just keep the gene ids
+                                colnames(mat_data) <- sub("\\.\\d+$", "", colnames(mat_data))
+                                # remove the multiple ids for on gene to keep the first id (eg. pita)
+                                colnames(mat_data) <- sub(";.*","", colnames(mat_data))
+                                # convert the gene ids
                                 ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl",host="www.ensembl.org")
                                 ensembl_id <- getBM(attributes=c(dgid,cgid),filters = cgid,
                                                     values = colnames(mat_data), mart = ensembl)
