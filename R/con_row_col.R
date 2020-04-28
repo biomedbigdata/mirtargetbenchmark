@@ -27,14 +27,23 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                                 # remove the multiple ids for on gene to keep the first id (eg. pita)
                                 colnames(mat_data) <- sub(";.*","", colnames(mat_data))
                                 # convert the gene ids
-                                ensembl_id <- AnnotationDbi::mapIds(org.Hs.eg.db, colnames(mat_data), keytype = cgid, dgid)
-                                colnames(mat_data) <- ensembl_id
+                                colens <- select(org.Hs.eg.db, keys=colnames(mat_data),
+                                          columns=c(dgid, cgid), keytype=cgid)
+                                # merge the 1:many mappings in one row with comma separated ensembl mappings
+                                colens_1 <- aggregate(formula(paste0(dgid,"~",cgid)), colens, paste, collapse=",")
+                                # find the indices of current ids in colens inside the colnames of mat_data
+                                updated_colids <- match(colens_1[[cgid]], colnames(mat_data))
+                                # update the arrangement of column names
+                                mat_data <- mat_data[,updated_colids]
+                                # update the column names to ensembl id's
+                                colnames(mat_data) <- colens_1[[dgid]]
+
+                              }
                                 # remove the NA's
                                 mat_data <- mat_data[,!is.na(colnames(mat_data))]
+
                                 # uniqueify the column names
                                 colnames(mat_data) <- make.unique(colnames(mat_data))
-                                #mat_data <- mat_data[, !duplicated(colnames(mat_data))]
-                              }
                             }
 
                             if(mir_bool){
