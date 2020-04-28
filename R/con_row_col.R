@@ -13,6 +13,8 @@
 gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                                      dgid = 'ENSEMBL',mir_bool = TRUE,cmirid = ' ', dmirid = 'Accession'){
 
+                              # first convert the tool data into a dataframe
+                              mat_data <- as.data.frame(mat_data)
                               if(gene_bool){
 
                               if(cgid == 'ENSEMBL_VERSION'){
@@ -27,7 +29,11 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                                 # convert the gene ids
                                 ensembl_id <- AnnotationDbi::mapIds(org.Hs.eg.db, colnames(mat_data), keytype = cgid, dgid)
                                 colnames(mat_data) <- ensembl_id
-                                mat_data <- mat_data[, !duplicated(colnames(mat_data))]
+                                # remove the NA's
+                                mat_data <- mat_data[,!is.na(colnames(mat_data))]
+                                # uniqueify the column names
+                                colnames(mat_data) <- make.unique(colnames(mat_data))
+                                #mat_data <- mat_data[, !duplicated(colnames(mat_data))]
                               }
                             }
 
@@ -36,18 +42,18 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                                 res <- as.data.frame(miRNA_AccessionToName(rownames(mat_data),targetVersion = dmirid))
                               }
                               else if(dmirid == "Accession"){
-                                # remove the versions from the end of miRNA ids
-                                rownames(mat_data) <- sub("\\.\\d+$", "", rownames(mat_data))
+                                # remove the versions from the end of miRNA ids, if it results in duplicates, then make unique
+                                rownames(mat_data) <- make.unique(sub("\\.\\d+$", "", rownames(mat_data)))
                                 ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
                                 res <- as.data.frame(miRNA_NameToAccession(rownames(mat_data),version = ver))
                               }
                               else{
                                 ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
-                                miRNAVersionConvert(rownames(mat_data), targetVersion = dmirid, exact = TRUE,
-                                                    verbose = TRUE)
+                                res <- as.data.frame(miRNAVersionConvert(rownames(mat_data), targetVersion = dmirid, exact = TRUE,
+                                                    verbose = TRUE))
                               }
 
-
+                              # remove the NA's if there are any
                               nas <- which(is.na(res[,dmirid]))
                               if(length(nas) == 0){
                                 rownames(mat_data) <- res[,dmirid]
@@ -59,6 +65,8 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                               rownames(mat_data) <- res[,dmirid][-which(is.na(res[,dmirid]))]
 
                               }
+                            # make unique if duplicates exist
+                            rownames(mat_data) <- make.unique(rownames(mat_data))
                             }
                             return(mat_data)
 }
