@@ -14,7 +14,10 @@ expression_preprocessing <- function(expr_data,missing_value_filter = 0,missing_
                               #missing value filter
                               if(missing_value_filter){
                               res <- colSums(expr_data == missing_value)/nrow(expr_data)*100
-                              expr_data <- expr_data[,-which(res>missing_value_filter)]
+                              # if there are more than mentioned number of missing values
+                              if(length(which(res>missing_value_filter)) > 0){
+                                expr_data <- expr_data[,-which(res>missing_value_filter)]
+                              }
                               }
 
                               #variance filter
