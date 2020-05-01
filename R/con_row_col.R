@@ -47,12 +47,13 @@ gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                             }
 
                             if(mir_bool){
+                              # remove the versions from the end of miRNA ids, if it results in duplicates, then make unique
+                              rownames(mat_data) <- make.unique(sub("\\.\\d+$", "", rownames(mat_data)))
+
                               if(cmirid == "Accession"){
                                 res <- as.data.frame(miRNA_AccessionToName(rownames(mat_data),targetVersion = dmirid))
                               }
                               else if(dmirid == "Accession"){
-                                # remove the versions from the end of miRNA ids, if it results in duplicates, then make unique
-                                rownames(mat_data) <- make.unique(sub("\\.\\d+$", "", rownames(mat_data)))
                                 ver <- checkMiRNAVersion(rownames(mat_data), verbose = TRUE)
                                 res <- as.data.frame(miRNA_NameToAccession(rownames(mat_data),version = ver))
                               }
