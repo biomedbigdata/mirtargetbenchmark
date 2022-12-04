@@ -2,7 +2,7 @@
 % Please edit documentation in R/reg_model.R
 \name{regression_results}
 \alias{regression_results}
-\title{Regression models on the expression data}
+\title{Apply regression}
 \usage{
 regression_results(dependent_expr, independent_expr, model_choice, rsq_filter)
 }

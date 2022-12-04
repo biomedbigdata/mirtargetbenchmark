@@ -1,10 +1,11 @@
+#' @title get common genes and miRNAs
+#' @description
 #' extract common genes and miRNAs from all the tool prediction matrices and regression matrix
-#' @export
 #' @import rlist
 #' @param reg_mat A matrix containg the regression coefficients
 #' @param tools A list containing prediction matrices/dataframes from different tools.Each element in the list is a matrix/dataframe
 #' @param tool_names A vector of the names of the tools in the same sequence as tools.
-
+#' @export
 common_data <- function(reg_mat,tools,tool_names){
 
                 #append the regression matrix to the list of tools

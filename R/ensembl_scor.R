@@ -1,10 +1,11 @@
+#' @title Calculate scores for all tools
+#' @description
 #' Functionality to calculate the ensemble scores for all the tools
-#' @export
 #' @import rlist
 #' @param tool_list A list containing the data frames containing scores for all the tools
 #' @param tool_names A list containing the names of all the tools in the dataframes
 #' @param performance_list A list containing performance scores of all the tools in decreasing order
-
+#' @export
 ensemble_scores <- function(tool_list, tool_names, performance_list){
 
                     names(tool_list) <- tool_names

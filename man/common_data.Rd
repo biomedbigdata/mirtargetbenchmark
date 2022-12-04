@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_common_interactions.R
 \name{common_data}
 \alias{common_data}
-\title{extract common genes and miRNAs from all the tool prediction matrices and regression matrix}
+\title{get common genes and miRNAs}
 \usage{
 common_data(reg_mat, tools, tool_names)
 }

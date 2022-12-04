@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr_prpc.R
 \name{expression_preprocessing}
 \alias{expression_preprocessing}
-\title{Filter the expression data}
+\title{preprocessing expression data}
 \usage{
 expression_preprocessing(
   expr_data,

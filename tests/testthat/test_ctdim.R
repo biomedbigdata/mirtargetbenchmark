@@ -1,8 +1,11 @@
 library(mirtargetbenchmark)
 
 test_that("check if the tool predictions are converted into a matrix with values",{
-  expect_equal(class(convert_tool_data_into_matrix(targetscan_pred[1:1000,],miRNA_colname = "miRNA",
-                                                   gene_colname = "Gene.ID",score_colname = "context...score")),"matrix")
+  expect_equal(
+    class(
+      convert_tool_data_into_matrix(targetscan_pred[1:1000,], miRNA_colname = "miRNA", gene_colname = "Gene.ID",score_colname = "context...score")
+    ),
+  c("matrix", "array" ))
 
 })
 

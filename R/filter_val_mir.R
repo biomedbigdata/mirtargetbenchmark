@@ -1,11 +1,12 @@
+#' @title Filter tooland regression matrices
+#' @description
 #' Filter the tool and regression matrixes using experimentally validated data
-#' @export
 #' @param matrix_list A list containing all the tool data and regression matrix
 #' @param matrix_names A list of names of all the data sets in the list
 #' @param val_mat A matrix containg experimentally validated gene-miRNA interactions.
 #' @param threshold_valmir A threshold for filtering miRNAs. Only the miRNAs which have more than threshold_valmir
 #' gene targets will be kept. It is 100 by default.
-
+#' @export
 validated_miRNA_filter <- function(matrix_list, matrix_names, val_mat, threshold_valmir = 100){
                           keep <- c()
 

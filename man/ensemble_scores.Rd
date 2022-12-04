@@ -2,7 +2,7 @@
 % Please edit documentation in R/ensembl_scor.R
 \name{ensemble_scores}
 \alias{ensemble_scores}
-\title{Functionality to calculate the ensemble scores for all the tools}
+\title{Calculate scores for all tools}
 \usage{
 ensemble_scores(tool_list, tool_names, performance_list)
 }
