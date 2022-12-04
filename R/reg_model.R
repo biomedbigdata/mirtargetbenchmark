@@ -3,7 +3,7 @@
 #' Regression models on the expression data
 #' @import glmnet
 #' @import foreach
-#' @import doSNOW
+#' @import doParallel
 #' @import parallel
 #' @importFrom stats lm
 #' @importFrom stats coef
@@ -21,7 +21,7 @@ regression_results <- function(dependent_expr , independent_expr , model_choice,
                       switch(model_choice,
                       e = {
                         results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
-                                .packages = c('glmnet','doSNOW'))%dopar%{
+                                .packages = c('glmnet','doParallel'))%dopar%{
 
                                   #y/gene is the dependent variable and X/miRNAs are the independent variables
                                   y <- as.matrix(dependent_expr[, x])
@@ -54,7 +54,7 @@ regression_results <- function(dependent_expr , independent_expr , model_choice,
                         }},
                       l = {
                         results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
-                                             .packages = c('glmnet','doSNOW'))%dopar%{
+                                             .packages = c('glmnet','doParallel'))%dopar%{
 
 
                                     y <- as.matrix(dependent_expr[, x ])
@@ -79,7 +79,7 @@ regression_results <- function(dependent_expr , independent_expr , model_choice,
                       },
                       r = {
                         results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
-                                           .packages = c('glmnet','doSNOW'))%dopar%{
+                                           .packages = c('glmnet','doParallel'))%dopar%{
 
                                              y <- as.matrix(dependent_expr[, x ])
                                              X <- as.matrix(independent_expr)

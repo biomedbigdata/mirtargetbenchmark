@@ -5,7 +5,7 @@
 #' @importFrom graphics hist
 #' @import foreach
 #' @import parallel
-#' @import doSNOW
+#' @import doParallel
 #' @importFrom rlang UQ
 #' @param pred_data The predictions in the form of a data frame
 #' @param miRNA_colname The column name of miRNA in the dataframe
@@ -41,7 +41,7 @@ convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname
                                  }
                                  x <- NULL
                                  tool_pred <- foreach(x = seq(1, length(genes),1), .combine = cbind, .inorder = TRUE,
-                                                         .packages = c('doSNOW', 'dplyr'))%dopar% {
+                                                         .packages = c('doParallel', 'dplyr'))%dopar% {
 
                                                            col <- genes[x]
 
