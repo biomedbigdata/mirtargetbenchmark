@@ -1,21 +1,27 @@
+#' @title Apply regression
+#' @description
 #' Regression models on the expression data
-#' @export
 #' @import glmnet
 #' @import foreach
-#' @import doSNOW
+#' @import doParallel
 #' @import parallel
+#' @importFrom stats lm
+#' @importFrom stats coef
 #' @param dependent_expr input  preprocessed dependent expression matrix
 #' @param independent_expr  input preprocessed independent expression matrix
 #' @param model_choice String input that specifies the regression model to be used.
 #' 'e','l','r' and 's' for elastic net, lasso, ridge and simple linear regression respectievly.
 #' @param rsq_filter A filter to select models/genes using the r squared value.All genes with rsq < rsq_filter will be removed.
+#' @export
 regression_results <- function(dependent_expr , independent_expr , model_choice, rsq_filter){
-
+                      # added to avoid warnings
+                      x <- NULL
+                      alpha_value <- NULL
                       #select and compute the model
                       switch(model_choice,
                       e = {
                         results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
-                                .packages = c('glmnet','doSNOW'))%dopar%{
+                                .packages = c('glmnet','doParallel'))%dopar%{
 
                                   #y/gene is the dependent variable and X/miRNAs are the independent variables
                                   y <- as.matrix(dependent_expr[, x])
@@ -48,7 +54,7 @@ regression_results <- function(dependent_expr , independent_expr , model_choice,
                         }},
                       l = {
                         results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
-                                             .packages = c('glmnet','doSNOW'))%dopar%{
+                                             .packages = c('glmnet','doParallel'))%dopar%{
 
 
                                     y <- as.matrix(dependent_expr[, x ])
@@ -73,7 +79,7 @@ regression_results <- function(dependent_expr , independent_expr , model_choice,
                       },
                       r = {
                         results <- foreach(x = seq(1,ncol(dependent_expr),1),.combine = cbind,.inorder = TRUE,
-                                           .packages = c('glmnet','doSNOW'))%dopar%{
+                                           .packages = c('glmnet','doParallel'))%dopar%{
 
                                              y <- as.matrix(dependent_expr[, x ])
                                              X <- as.matrix(independent_expr)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/con_row_col.R
 \name{gene_miRNA_id_conversion}
 \alias{gene_miRNA_id_conversion}
-\title{Convert gene names and miRNA names into ensembl ids and accession ids respectively}
+\title{names to ids}
 \usage{
 gene_miRNA_id_conversion(
   mat_data,

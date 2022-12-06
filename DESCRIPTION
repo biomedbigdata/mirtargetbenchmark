@@ -1,23 +1,33 @@
 Package: mirtargetbenchmark
 Type: Package
-Title: Benchmarking of sequence miRNA target prediction tools
-Version: 1.0.0
+Title: Benchmarking of Sequence miRNA Target Prediction Tools
+Version: 0.0.1
 Author: Akshit Achara, Markus List
 Maintainer: Akshit Achara <acharaakshit@gmail.com>
-Description: This package provides the following functionalities:
-    1) Filer gene/miRNA expression data based on variance and frequency
-    2) Build regression models on the expression data.
-    3) Convert predictions from tools into matrix format.
-    4) Convert gene/miRNA ids into desired format for expression/tool prediction matrices.
-    5) Extract common gene/miRNA interactions from the tools and regression coefficient matrix.
-    6) Extract the miRNAs with more than certain vaidated gene targets from miRTarBase.
-    7) Benchmark the tools using binding sites.
-    8) Benchmark the tools using confidence scores.
-    9) Ensemble method for target prediction.
-License: GPL (>=3)
+Description: microRNAs are 19-22 nucleotide long molecules responsible for repressing 
+    the expression of genes. Several algorithms have been proposed to predict target 
+    genes of microRNAs such as targetscan etc. These methods use the fact that a 
+    seed sequence of the microRNA is complementary to a part of the sequence in the
+    target gene, mostly in the 3' UTR. Free energy of the binding of the microRNA 
+    can be used as well as sequence conservation at the target site to improve the 
+    predictions. Nevertheless, a current problem is that the false positive rate of
+    these predictions is extremely high. This can have several reasons, for example
+    the microRNA and the target gene may not be expressed at the same time in a 
+    specific cell type or tissue. There is no standard to compare these tools as
+    sequence based tools don't use condition specific imformation and hence, result
+    in a lot of false positives. There are some expression based tools which use the
+    correlation/coefficient information from Although we can't say which tool has the
+    best overall performance for all tissue types, we can benchmark these tools ,using
+    the regression models on gene and miRNA expression data, for a specific condition.
+    R users can use this package to perform regression on their gene and miRNA expression
+    data and benchmark different sequence based tools.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
-Imports: org.Hs.eg.db, AnnotationDbi, miRBaseConverter, doSNOW, glmnet, rlist, pracma, ROCR, dplyr, foreach, parallel
-Suggests: knitr, rmarkdown
+RoxygenNote: 7.2.2
+Depends: R (>= 2.10)
+biocViews:
+Imports: org.Hs.eg.db, AnnotationDbi, miRBaseConverter, doParallel, glmnet, rlist, dplyr, foreach, parallel, graphics, stats, magrittr, rlang
+Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
+Biarch: true

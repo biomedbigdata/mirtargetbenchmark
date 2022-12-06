@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_val_mir.R
 \name{validated_miRNA_filter}
 \alias{validated_miRNA_filter}
-\title{Filter the tool and regression matrixes using experimentally validated data}
+\title{Filter tooland regression matrices}
 \usage{
 validated_miRNA_filter(
   matrix_list,

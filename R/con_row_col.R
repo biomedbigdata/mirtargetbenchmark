@@ -1,8 +1,11 @@
+#' @title names to ids
+#' @description
 #' Convert gene names and miRNA names into ensembl ids and accession ids respectively
-#' @export
 #' @import org.Hs.eg.db
 #' @import AnnotationDbi
 #' @import miRBaseConverter
+#' @importFrom stats aggregate
+#' @importFrom stats formula
 #' @param mat_data expression matrix or tool prediction matrix with columns as genes and rows as miRNAs
 #' @param cgid A string containing current gene id format.'ACCNUM' by default
 #' @param dgid A string containing desired gene id format.'ENSEMBL' by default.
@@ -10,6 +13,7 @@
 #' @param mir_bool A boolean value. If it is TRUE, miRNA ids will be converted.TRUE by default
 #' @param cmirid A string containing current miRNA id format.empty by default.version will be automatically detected
 #' @param dmirid A string containing desired miRNA id format.
+#' @export
 gene_miRNA_id_conversion <- function(mat_data,gene_bool = TRUE,cgid='ACCNUM',
                                      dgid = 'ENSEMBL',mir_bool = TRUE,cmirid = ' ', dmirid = 'Accession'){
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ctdim.R
 \name{convert_tool_data_into_matrix}
 \alias{convert_tool_data_into_matrix}
-\title{Convert tool prediction dataframe into a matrix with rows as miRNAs, columns as genes and scores as values}
+\title{dataframe to matrix}
 \usage{
 convert_tool_data_into_matrix(
   pred_data,

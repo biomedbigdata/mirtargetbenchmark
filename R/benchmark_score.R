@@ -1,5 +1,6 @@
+#' @title Regression vs Scores
+#' @description
 #' Benchmark various tools against regression using the scores.
-#' @export
 #' @import rlist
 #' @import foreach
 #' @param reg_mat A matrix containing the regression coefficients in the form of a matrix/dataframe.
@@ -7,6 +8,7 @@
 #' @param tool_names A list of the names of tools in the same order as tool_mat_list
 #' @param threshold A threshold coefficient value for coefficients.All the coefficients less than the threshold
 #' will be changed to 1 and others will be 0. threshold = 0 by default.
+#' @export
 tool_vs_regression <- function(reg_mat, tool_mat_list, tool_names, threshold =  0){
 
                     names(tool_mat_list) <- tool_names

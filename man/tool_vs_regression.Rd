@@ -2,7 +2,7 @@
 % Please edit documentation in R/benchmark_score.R
 \name{tool_vs_regression}
 \alias{tool_vs_regression}
-\title{Benchmark various tools against regression using the scores.}
+\title{Regression vs Scores}
 \usage{
 tool_vs_regression(reg_mat, tool_mat_list, tool_names, threshold = 0)
 }

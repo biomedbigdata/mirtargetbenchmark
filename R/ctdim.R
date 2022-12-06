@@ -1,15 +1,18 @@
+#' @title dataframe to matrix
+#' @description
 #' Convert tool prediction dataframe into a matrix with rows as miRNAs, columns as genes and scores as values
-#' @export
 #' @importFrom dplyr filter
+#' @importFrom graphics hist
 #' @import foreach
 #' @import parallel
-#' @import doSNOW
+#' @import doParallel
+#' @importFrom rlang UQ
 #' @param pred_data The predictions in the form of a data frame
 #' @param miRNA_colname The column name of miRNA in the dataframe
 #' @param gene_colname The column name of gene in the dataframe
 #' @param score_colname The column name of scores in your dataframe
+#' @export
 convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname, score_colname){
-
                                  pred_data <- pred_data[,c(miRNA_colname,gene_colname,score_colname)]
 
                                  #remove the NAs from all the columns
@@ -36,9 +39,9 @@ convert_tool_data_into_matrix <- function(pred_data, miRNA_colname, gene_colname
                                  if(length(genes) < 1){
                                    stop("The dataframe is empty or all values are NA")
                                  }
-
+                                 x <- NULL
                                  tool_pred <- foreach(x = seq(1, length(genes),1), .combine = cbind, .inorder = TRUE,
-                                                         .packages = c('doSNOW', 'dplyr'))%dopar% {
+                                                         .packages = c('doParallel', 'dplyr'))%dopar% {
 
                                                            col <- genes[x]
 

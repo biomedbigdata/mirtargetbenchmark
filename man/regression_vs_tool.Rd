@@ -2,7 +2,7 @@
 % Please edit documentation in R/benchmark_coefficients.R
 \name{regression_vs_tool}
 \alias{regression_vs_tool}
-\title{Benchmark tools by comparing regression against tools}
+\title{Compare with Regresssion}
 \usage{
 regression_vs_tool(reg_mat, tool_mat_list, tool_names)
 }
